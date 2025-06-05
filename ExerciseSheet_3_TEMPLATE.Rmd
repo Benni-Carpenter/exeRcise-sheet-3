@@ -107,15 +107,16 @@ a)  Load the `pixar_films` dataset into R. Clean the dataset by removing
 ```{r}
 pixar <- read_csv("data/pixar_films.csv")
 pixar <- pixar %>% filter(!is.na(film))
-pixar <- pixar %>% mutate(rating_meaning = case_when(
-  film_rating == "G"  ~ "General Audience",
-  film_rating == "PG" ~ "Parental Guidance",
-  TRUE                ~ "N/A"
-))
+pixar$film_rating <- factor(pixar$film_rating, exclude = NULL)
 ```
 
-Parental Control is a sensitive topic and parents should know exactly
-what each rating means.
+The two possible values are "G", which stands for "General Audience" and
+tells the viewer that the film is suitable for all ages and "PG", which
+restricts the movie to children over the age of 7, because it stands for
+"Parental Guidance Suggested".
+
+film_rating is a categorical variable, because it has a fxed set of
+posible values, which helps visualizing the rating
 
 <!-- -->
 
@@ -128,8 +129,9 @@ b)  Inspect the film titles manually. Which films form a film series? A
 
     ```{r}
     pixar_series <- data_frame(
-      film = c("Cars", "Cars 2", "Cars 3", "Finding Dory", "Finding Nemo", "The Incredibles", "Incredibles 2", "Toy Story", "Toy Story 2", "Toy Story 3", "Toy Story 4", "Lightyear", "Monsters University", "Monsters, Inc."),
-      series_length = c(3, 3, 3, 2, 2, 2, 2, 5, 5, 5, 5, 5, 2, 2)
+      film = c("Cars", "Cars 2", "Cars 3", "Finding Dory", "Finding Nemo", "The Incredibles", "Incredibles 2", "Toy Story", "Toy Story 2", "Toy Story 3", "Toy Story 4", "Monsters University", "Monsters, Inc."),
+      series_length = c(3, 3, 3, 2, 2, 2, 2, 4, 4, 4, 4, 2, 2),
+      series = c("Cars", "Cars", "Cars", "Finding", "Finding", "Incredibles", "Incredibles", "Toy Story", "Toy Story", "Toy Story", "Toy Story", "Monster", "Monster")
     )
 
     print(pixar_series)
@@ -143,7 +145,7 @@ c)  Load the `public_response` dataframe into R. Convert the
 
     ```{r}
     public_response <- read_csv("data/public_response.csv")
-    public_response$cinema_score <- factor(public_response$cinema_score, levels = c("A+", "A", "A-"), ordered = TRUE)
+    public_response$cinema_score <- factor(public_response$cinema_score, levels = c("A-", "A", "A+"), exclude = NULL, ordered = TRUE)
 
     pixar_combined <- merge(pixar, public_response, by = "film") %>% select(-number)
     ```
@@ -165,20 +167,24 @@ d)  Choose one of the variables representing the public response and
 
     ```{r fig.height = 8, fig.width=15}
     series_response <- merge(pixar_series, public_response, by = "film")
+    series_response <- merge(series_response, pixar, by = "film")
 
     ggplot(
       data = series_response,
       mapping = aes(
-        x = film,
-        y = metacritic
+        x = reorder(film, release_date),
+        y = metacritic,
+        fill = film
       )
     ) +
       labs(
         x = "Film",
         y = "Metavritic Score",
-        title = "Did viewers like Pixar's sierieses?"
+        fill = "Film",
+        title = "Did viewers like Pixar's series?"
       ) +
-      geom_bar(stat = "identity") 
+      geom_col(position = "dodge") +
+      facet_wrap(~series, scales = "free_x")
     ```
 
 Most series like Toy Story or Cars have scores close to each other,
