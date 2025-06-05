@@ -214,9 +214,40 @@ e)  Use R to answer your chosen question. Please limit your analysis to
     You are **not expected** to use advanced statistical models or
     external packages which haven't been introduced.
 
+    ```{r}
+    life_expectancy <- read_csv("data/Life expectancy - OECD.csv")
+    life_expectancy_ger <- life_expectancy %>% filter(Entity == "Germany")
+
+    ggplot(
+      data = life_expectancy_ger,
+      mapping = aes(
+        x = Year,
+        y = `Life Expectancy (OECD)`
+      )
+    ) +
+      geom_line()
+    ```
+
+    The life expectancy in Germany has been on a near perfect rise since
+    1960, going from 70 Years all the way up to 80 Years, which is a
+    remarkable medical achievement
+
 f)  Create a meaningful plot / figure with the dataset. Make sure to
     provide a figure caption (via the chunk options / Rmarkdown) and
     correctly label the figure.
+
+```{r top-20-life-expec, fig.cap="Top 20 life expectancy in 2015"}
+life_expectancy_2015 <- life_expectancy %>% filter(Year == 2015) %>% arrange(desc(`Life Expectancy (OECD)`)) %>% slice_head(n = 20) %>% mutate(Entity = factor(Entity, levels = unique(Entity)))
+
+ggplot(
+  data = life_expectancy_2015,
+  mapping = aes(
+    x = Entity,
+    y = `Life Expectancy (OECD)`
+  )
+) +
+  geom_bar(stat = "Identity")
+```
 
 ## Final Note
 
