@@ -100,6 +100,23 @@ a)  Load the `pixar_films` dataset into R. Clean the dataset by removing
     the possible values and what do they mean? Create a factor variable
     for the film rating. Why is this appropriate?
 
+    ```{r}
+    library(tidyverse)
+    ```
+
+```{r}
+pixar <- read_csv("data/pixar_films.csv")
+pixar <- pixar %>% filter(!is.na(film))
+pixar <- pixar %>% mutate(rating_meaning = case_when(
+  film_rating == "G"  ~ "General Audience",
+  film_rating == "PG" ~ "Parental Guidance",
+  TRUE                ~ "N/A"
+))
+```
+
+Parental Control is a sensitive topic and parents should know exactly
+what each rating means.
+
 <!-- -->
 
 b)  Inspect the film titles manually. Which films form a film series? A
@@ -108,6 +125,10 @@ b)  Inspect the film titles manually. Which films form a film series? A
     e.g. "Despicable Me" and "Despicable Me 2". Create a dataframe which
     displays a list of the different series with the titles of the films
     and how many films belong to the series. Output the dataframe.
+
+    ```{r}
+
+    ```
 
 c)  Load the `public_response` dataframe into R. Convert the
     `cinema_score` variable into a factor while ensuring the factor
