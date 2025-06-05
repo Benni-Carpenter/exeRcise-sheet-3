@@ -128,7 +128,7 @@ b)  Inspect the film titles manually. Which films form a film series? A
 
     ```{r}
     pixar_series <- data_frame(
-      title = c("Cars", "Cars 2", "Cars 3", "Finding Dory", "Finding Nemo", "The Incredibles", "Incredibles 2", "Toy Story", "Toy Story 2", "Toy Story 3", "Toy Story 4", "Lightyear", "Monsters University", "Monsters, Inc."),
+      film = c("Cars", "Cars 2", "Cars 3", "Finding Dory", "Finding Nemo", "The Incredibles", "Incredibles 2", "Toy Story", "Toy Story 2", "Toy Story 3", "Toy Story 4", "Lightyear", "Monsters University", "Monsters, Inc."),
       series_length = c(3, 3, 3, 2, 2, 2, 2, 5, 5, 5, 5, 5, 2, 2)
     )
 
@@ -162,6 +162,27 @@ d)  Choose one of the variables representing the public response and
 
     What do you notice when comparing the scores of the films in a
     series? Do you see any patterns?
+
+    ```{r fig.height = 8, fig.width=15}
+    series_response <- merge(pixar_series, public_response, by = "film")
+
+    ggplot(
+      data = series_response,
+      mapping = aes(
+        x = film,
+        y = metacritic
+      )
+    ) +
+      labs(
+        x = "Film",
+        y = "Metavritic Score",
+        title = "Did viewers like Pixar's sierieses?"
+      ) +
+      geom_bar(stat = "identity") 
+    ```
+
+Most series like Toy Story or Cars have scores close to each other,
+which underlines the consistency in Pixar's fan favourites.
 
 ## Exercise 4: Open Analysis (4 points)
 
