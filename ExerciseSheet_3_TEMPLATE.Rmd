@@ -187,8 +187,8 @@ d)  Choose one of the variables representing the public response and
       facet_wrap(~series, scales = "free_x")
     ```
 
-Most series like Toy Story or Cars have scores close to each other,
-which underlines the consistency in Pixar's fan favourites.
+Most series like have scores close to each other, but with a slight
+downtrend.
 
 ## Exercise 4: Open Analysis (4 points)
 
@@ -242,8 +242,8 @@ f)  Create a meaningful plot / figure with the dataset. Make sure to
     provide a figure caption (via the chunk options / Rmarkdown) and
     correctly label the figure.
 
-```{r top-20-life-expec, fig.cap="Top 20 life expectancy in 2015"}
-life_expectancy_2015 <- life_expectancy %>% filter(Year == 2015) %>% arrange(desc(`Life Expectancy (OECD)`)) %>% slice_head(n = 20) %>% mutate(Entity = factor(Entity, levels = unique(Entity)))
+```{r top-10-life-expec, fig.cap="Top 10 life expectancy in 2015"}
+life_expectancy_2015 <- life_expectancy %>% filter(Year == 2015) %>% arrange(desc(`Life Expectancy (OECD)`)) %>% slice_head(n = 10) %>% mutate(Entity = factor(Entity, levels = unique(Entity)))
 
 ggplot(
   data = life_expectancy_2015,
@@ -252,6 +252,9 @@ ggplot(
     y = `Life Expectancy (OECD)`
   )
 ) +
+  labs(
+    x = "Country"
+  ) +
   geom_bar(stat = "Identity")
 ```
 
